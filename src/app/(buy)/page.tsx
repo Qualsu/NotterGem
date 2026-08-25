@@ -17,7 +17,7 @@ import { getPlanLimits } from "@/lib/plan-limits";
 
 export default function BuyPremium() {
     const router = useRouter();
-    const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+    const [selectedPlan, setSelectedPlan] = useState<string | null>("2");
     const { organization } = useOrganization();
     const { user, isSignedIn, isLoaded } = useUser();
     const isOrg = organization?.id !== undefined;
@@ -31,7 +31,7 @@ export default function BuyPremium() {
     };
 
     const calculatePrice = (): PriceCalculation => {
-        if (!selectedPlan || !profile) return { price: 0, oldPrice: 0 };
+        if (!selectedPlan) return { price: 0, oldPrice: 0 };
 
         let price = basePrices[selectedPlan];
         let oldPrice = 0;
@@ -46,11 +46,11 @@ export default function BuyPremium() {
 
     const canPurchasePlan = () => {
         if (profile?.premium === 1 && selectedPlan === "1") {
-            toast.error("Вы уже приобрели этот тариф.");
+            toast.error("Вы уже приобрели тариф Amber.");
             return false;
         }
         if (profile?.premium === 2 && selectedPlan === "2") {
-            toast.error("Вы уже приобрели этот тариф.");
+            toast.error("Вы уже приобрели тариф Diamond.");
             return false;
         }
         return true;
@@ -114,119 +114,211 @@ export default function BuyPremium() {
     };
 
     return (
-        <main className="relative z-10 min-h-screen flex items-center justify-center p-6">
-            <div className="relative mt-10 w-full max-w-6xl">
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-8 shadow-lg">
-                <section className="space-y-4">
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-extrabold">
-                            <span className="bg-gradient-to-r from-logo-yellow to-logo-light-yellow bg-clip-text text-transparent">Notter </span>
-                            <span className="text-logo-cyan"> Gem</span>
-                        </h1>
-                        <Image src={images.BADGE.DIAMOND} alt="Notter Gem" width={36} height={36} />
-                    </div>
+        <main className="relative z-10 flex-1 flex items-center justify-center p-4 sm:p-6 pt-20 pb-8">
+            <div className="relative w-full max-w-5xl my-auto">
 
-                    <p className="text-muted-foreground">Выберите тариф, который подходит вам. Нажмите на карточку, чтобы выбрать.</p>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <PlanCard
-                            id="1"
-                            title="Amber"
-                            price={isOrg ? 149 : 29}
-                            icon={images.BADGE.AMBER}
-                            isOrg={isOrg}
-                            selected={selectedPlan === "1"}
-                            onSelect={() => setSelectedPlan("1")}
-                        />
-
-                        <PlanCard
-                            id="2"
-                            title="Diamond"
-                            price={isOrg ? 299 : 99}
-                            icon={images.BADGE.DIAMOND}
-                            isOrg={isOrg}
-                            selected={selectedPlan === "2"}
-                            onSelect={() => setSelectedPlan("2")}
-                        />
-                    </div>
-                </section>
-
-                <aside className="bg-card/60 dark:bg-zinc-900/60 backdrop-blur rounded-2xl p-6 shadow-lg">
-                    <div className="mb-4">
-                        <h2 className="text-xl font-semibold">Оплата</h2>
-                        <p className="text-sm text-muted-foreground">Аккаунт / Организация</p>
-                        <div className="mt-2">
-                            <OrganizationSwitcher />
+                <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-6 sm:p-8 backdrop-blur-xl">
+                    {/* LEFT COLUMN: TARIFFS & FEATURES */}
+                    <section className="lg:col-span-7 space-y-4">
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-3xl font-extrabold tracking-tight">
+                                <span className="bg-gradient-to-r from-logo-yellow to-logo-light-yellow bg-clip-text text-transparent">Notter </span>
+                                <span className="text-logo-cyan">Gem</span>
+                            </h1>
                         </div>
-                    </div>
 
-                    <div className="mb-4">
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm text-muted-foreground">Текущий план</div>
-                            <div className="font-medium">{getCurrentPlan()}</div>
+                        <p className="text-sm text-muted-foreground">
+                            Единая подписка для <b>Notter</b> и <b>Notter ToDo</b>
+                        </p>
+
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                            <PlanCard
+                                id="1"
+                                title="Amber"
+                                price={isOrg ? 149 : 29}
+                                icon={images.BADGE.AMBER}
+                                isOrg={isOrg}
+                                selected={selectedPlan === "1"}
+                                onSelect={() => setSelectedPlan("1")}
+                            />
+
+                            <PlanCard
+                                id="2"
+                                title="Diamond"
+                                price={isOrg ? 299 : 99}
+                                icon={images.BADGE.DIAMOND}
+                                isOrg={isOrg}
+                                selected={selectedPlan === "2"}
+                                onSelect={() => setSelectedPlan("2")}
+                            />
                         </div>
-                    </div>
+                    </section>
 
-                    <div className="mb-4">
-                        <div className="text-sm text-muted-foreground">Выбранный тариф</div>
-                        <div className="mt-2 text-lg font-semibold">{selectedPlan === "1" ? "Amber" : selectedPlan === "2" ? "Diamond" : "—"}</div>
-                    </div>
+                    {/* RIGHT COLUMN: CHECKOUT */}
+                    <aside className="lg:col-span-5 flex flex-col justify-between bg-card/60 dark:bg-zinc-900/60 backdrop-blur rounded-2xl p-6 border border-border/40">
+                        <div className="space-y-4">
+                            <div>
+                                <h2 className="text-xl font-bold">Оплата</h2>
+                                <p className="text-xs text-muted-foreground mt-0.5">Аккаунт / Организация</p>
+                                <div className="mt-2">
+                                    <OrganizationSwitcher />
+                                </div>
+                            </div>
 
-                    <div className="mb-4">
-                        <div className="flex items-baseline gap-1">
-                            <div className="text-2xl font-bold">{calculatePrice().price}₽</div>
-                            {calculatePrice().oldPrice > 0 && (
-                                <div className="text-sm line-through text-primary/70">{calculatePrice().oldPrice}₽</div>
-                            )}
+                            <div className="flex items-center justify-between border-t border-border/40 pt-3">
+                                <div className="text-sm text-muted-foreground">Текущий план</div>
+                                <div className="font-semibold text-sm">{getCurrentPlan()}</div>
+                            </div>
+
+                            <div className="flex items-center justify-between border-t border-border/40 pt-3">
+                                <div className="text-sm text-muted-foreground">Выбранный тариф</div>
+                                <div className="text-base font-bold text-foreground">
+                                    {selectedPlan === "1" ? "Amber" : selectedPlan === "2" ? "Diamond" : "—"}
+                                </div>
+                            </div>
+
+                            <div className="border-t border-border/40 pt-3 space-y-1">
+                                <div className="text-xs text-muted-foreground">Итого к оплате</div>
+                                <div className="flex items-baseline gap-2">
+                                    <div className="text-3xl font-extrabold">{calculatePrice().price} ₽</div>
+                                    {calculatePrice().oldPrice > 0 && (
+                                        <div className="text-sm line-through text-muted-foreground font-medium">
+                                            {calculatePrice().oldPrice} ₽
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="text-[11px] text-muted-foreground">Единоразово навсегда</div>
+                            </div>
                         </div>
-                        <div className="text-xs text-muted-foreground">Единоразово</div>
-                    </div>
 
-                    <div className="mt-6">
-                        <Button onClick={handlePayment} className="w-full" disabled={loading || !selectedPlan}>
-                            {loading ? "Ожидание..." : "Оплатить"}
-                        </Button>
-                    </div>
-                </aside>
+                        <div className="mt-6 pt-4 border-t border-border/40">
+                            <Button onClick={handlePayment} className="w-full h-11 text-sm font-bold" disabled={loading || !selectedPlan}>
+                                {loading ? "Ожидание..." : "Оплатить"}
+                            </Button>
+                        </div>
+                    </aside>
                 </div>
             </div>
         </main>
     );
 }
 
-function PlanCard({ id, title, price, icon, isOrg, selected, onSelect }: { id: string; title: string; price: number; icon?: string; isOrg: boolean; selected: boolean; onSelect: () => void }) {
+function PlanCard({
+    id,
+    title,
+    price,
+    icon,
+    isOrg,
+    selected,
+    onSelect,
+}: {
+    id: string;
+    title: string;
+    price: number;
+    icon?: string;
+    isOrg: boolean;
+    selected: boolean;
+    onSelect: () => void;
+}) {
     const limits = getPlanLimits(Number(id), isOrg);
 
     return (
-        <div onClick={onSelect} className={`cursor-pointer p-4 rounded-xl border transition ${selected ? "border-white shadow-lg" : "border-border/50 hover:shadow-md"} bg-card/70 dark:bg-zinc-900/60`}> 
-            <div className="flex items-center gap-3">
-                {icon && <Image src={icon} alt={title} width={40} height={40} />}
-                <div>
-                    <div className="text-lg font-semibold">{title}</div>
-                    <div className="text-sm text-muted-foreground">{price}₽ / навсегда</div>
+        <div
+            onClick={onSelect}
+            className={`cursor-pointer p-4 sm:p-5 rounded-2xl border transition-all duration-150 flex flex-col justify-between ${
+                selected
+                    ? "border-primary ring-2 ring-primary/20 bg-card"
+                    : "border-border/60 hover:border-border/90 bg-card/70 dark:bg-zinc-900/60"
+            }`}
+        >
+            <div>
+                {/* Header */}
+                <div className="flex items-center gap-3">
+                    {icon && <Image src={icon} alt={title} width={38} height={38} />}
+                    <div>
+                        <div className="text-base font-bold text-foreground">{title}</div>
+                        <div className="text-xs text-muted-foreground font-medium">{price}₽ / навсегда</div>
+                    </div>
+                </div>
+
+                {/* Features List */}
+                <div className="mt-4 space-y-3 text-xs text-muted-foreground">
+                    {/* Notter Features */}
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 font-semibold text-foreground text-[11px]">
+                            <Image
+                                src={images.IMAGE.DARK_ICON}
+                                alt="Notter"
+                                width={13}
+                                height={13}
+                            />
+                            <span>В Notter:</span>
+                        </div>
+                        <ul className="list-disc pl-4 space-y-0.5">
+                            <li>До {limits.documents} заметок</li>
+                            <li>До {limits.publicDocuments} публичных страниц</li>
+                            <li>Загрузка до {limits.uploadMb} МБ</li>
+                            {title === "Amber" ? (
+                                <li>Сокращенные ссылки</li>
+                            ) : (
+                                <>
+                                    <li>Кастомные ссылки</li>
+                                    <li>Без упоминаний Notter</li>
+                                    <li>Экспорт заметок в JSON</li>
+                                </>
+                            )}
+                        </ul>
+                    </div>
+
+                    {/* Notter ToDo Features */}
+                    <div className="space-y-1 pt-1 border-t border-border/30">
+                        <div className="flex items-center gap-1.5 font-semibold text-foreground text-[11px]">
+                            <Image
+                                src={images.IMAGE.TODO_ICON}
+                                alt="Notter ToDo"
+                                width={13}
+                                height={13}
+                                className="rounded-xs"
+                            />
+                            <span>В Notter ToDo:</span>
+                        </div>
+                        <ul className="list-disc pl-4 space-y-0.5">
+                            <li>
+                                {typeof limits.todo.boards === "number"
+                                    ? `До ${limits.todo.boards} досок`
+                                    : `${limits.todo.boards} досок`}
+                            </li>
+                            <li>До {limits.todo.publicBoards} публичных досок</li>
+                            <li>Расширенный журнал аудита</li>
+                            <li>Кастомные фоны досок</li>
+                            {title === "Diamond" && (
+                                <>
+                                    <li>Экспорт и импорт досок</li>
+                                    <li>Экспорт журнала</li>
+                                </>
+                            )}
+                        </ul>
+                    </div>
+
+                    {/* General / Profile */}
+                    <div className="pt-1 border-t border-border/30 text-[11px]">
+                        <span>✨ Значок <b>{title}</b> в профиле</span>
+                    </div>
                 </div>
             </div>
-            <ul className="mt-3 text-sm text-muted-foreground list-disc pl-5 space-y-1">
-                {title === "Amber" ? (
-                    <>
-                        <li>Сокращенные ссылки</li>
-                        <li>Значок в профиле</li>
-                        <li>До {limits.documents} заметок</li>
-                        <li>До {limits.publicDocuments} публичных заметок</li>
-                        <li>Лимит на загрузку до {limits.uploadMb} МБ</li>
-                    </>
-                ) : (
-                    <>
-                        <li>Все преимущества Amber</li>
-                        <li>Кастомные ссылки</li>
-                        <li>Отключение упоминаний Notter</li>
-                        <li>Ззаметки в JSON</li>
-                        <li>До {limits.documents} заметок</li>
-                        <li>До {limits.publicDocuments} публичных заметок</li>
-                        <li>Лимит на загрузку до {limits.uploadMb} МБ</li>
-                    </>
-                )}
-            </ul>
+
+            <div className="mt-4 pt-2">
+                <div
+                    className={`w-full py-1 rounded-lg text-center text-xs font-semibold transition ${
+                        selected
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted/50 text-muted-foreground"
+                    }`}
+                >
+                    {selected ? "Выбран" : "Выбрать"}
+                </div>
+            </div>
         </div>
-    )
+    );
 }

@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react"
 import { useAuth } from "@clerk/nextjs"
@@ -8,7 +7,6 @@ import { useAuth } from "@clerk/nextjs"
 import { ModeToggle } from "@/components/mode-toggle"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
-import { images } from "@/config/routing/image.route"
 import { pages } from "@/config/routing/pages.route"
 import type { NavbarProps } from "@/config/types/landing.types"
 import { cn } from "@/lib/utils"
@@ -21,40 +19,34 @@ export function Navbar({ logo = true }: NavbarProps) {
   const authLoading = !isLoaded
 
   return (
-    <div
+    <header
       className={cn(
-        "fixed top-0 z-50 flex h-14 w-full items-center justify-between bg-background p-6 dark:bg-zinc-950",
-        scrolled && "border-b shadow-sm"
+        "fixed top-0 z-50 flex h-14 w-full bg-background/80 px-4 sm:px-6 backdrop-blur-md transition-all",
+        scrolled && "border-b border-border/40 shadow-sm"
       )}
     >
-      <div className="container mx-3 flex items-center justify-between md:mx-auto">
-        <Link href={pages.ROOT}>
-          <Image
-            src={images.IMAGE.LIGHT_ICON}
-            height={35}
-            width={35}
-            alt="Notter"
-            className={`${!logo ? "hidden" : ""} block dark:hidden`}
-          />
-          <Image
-            src={images.IMAGE.DARK_ICON}
-            height={35}
-            width={35}
-            alt="Notter"
-            className={`${!logo ? "hidden" : ""} hidden dark:block`}
-          />
+      <div className="mx-auto flex w-full items-center justify-between gap-4">
+        {/* Brand */}
+        <Link href={pages.ROOT} className={`${!logo ? "hidden" : ""} flex items-center transition-opacity hover:opacity-90`}>
+          <span className="text-xl font-extrabold tracking-tight">
+            <span className="bg-gradient-to-r from-logo-yellow to-logo-light-yellow bg-clip-text text-transparent">
+              Notter
+            </span>{" "}
+            <span className="text-logo-cyan">Gem</span>
+          </span>
         </Link>
 
-        <div className="flex items-center gap-2">
+        {/* Auth & Theme */}
+        <div className="flex items-center gap-2 sm:gap-3">
           {authLoading ? (
-            <div className={`${!logo ? "hidden" : ""} mr-3 flex items-center gap-2`}>
-              <Skeleton className="mr-1 h-8 w-20 rounded-md" />
+            <div className={`${!logo ? "hidden" : ""} flex items-center gap-2`}>
+              <Skeleton className="h-8 w-16 rounded-md" />
               <Skeleton className="h-8 w-8 rounded-full" />
             </div>
           ) : (
             <>
               <SignedIn>
-                <div className={`${!logo ? "hidden" : ""} mr-4 mt-1 items-center`}>
+                <div className="flex items-center">
                   <UserButton />
                 </div>
               </SignedIn>
@@ -62,7 +54,7 @@ export function Navbar({ logo = true }: NavbarProps) {
               <SignedOut>
                 <SignInButton>
                   <Link href={pages.AUTH} className={!logo ? "hidden" : undefined}>
-                    <Button variant="ghost">Войти</Button>
+                    <Button variant="ghost" size="sm">Войти</Button>
                   </Link>
                 </SignInButton>
               </SignedOut>
@@ -72,6 +64,8 @@ export function Navbar({ logo = true }: NavbarProps) {
           <ModeToggle />
         </div>
       </div>
-    </div>
+    </header>
   )
 }
+
+

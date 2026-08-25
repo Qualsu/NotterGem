@@ -9,8 +9,7 @@ export function ThemeIcons() {
   const { resolvedTheme } = useTheme()
 
   useEffect(() => {
-    const href =
-      resolvedTheme === "light" ? images.IMAGE.LIGHT_ICON : images.IMAGE.DARK_ICON
+    const href = images.IMAGE.DARK_ICON
 
     document
       .querySelectorAll<HTMLLinkElement>(

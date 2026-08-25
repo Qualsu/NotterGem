@@ -23,28 +23,10 @@ export const metadata: Metadata = {
         url: images.IMAGE.DARK_ICON,
         type: "image/png",
       },
-      {
-        url: images.IMAGE.LIGHT_ICON,
-        type: "image/png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: images.IMAGE.DARK_ICON,
-        type: "image/png",
-        media: "(prefers-color-scheme: dark)",
-      },
     ],
     shortcut: [
       {
         url: images.IMAGE.DARK_ICON,
-      },
-      {
-        url: images.IMAGE.LIGHT_ICON,
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: images.IMAGE.DARK_ICON,
-        media: "(prefers-color-scheme: dark)",
       },
     ],
     apple: [images.IMAGE.DARK_ICON],

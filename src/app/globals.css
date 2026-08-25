@@ -3,12 +3,14 @@
 @import "tw-animate-css";
 @custom-variant dark (&:where(.dark, .dark *));
 
-html,
-body,
-:root {
-  height: 100%;
-  overflow-x: hidden;
+html {
+  overflow-x: clip;
 }
+
+body {
+  min-height: 100vh;
+}
+
 
 :root {
   --foreground-rgb: 0, 0, 0;
